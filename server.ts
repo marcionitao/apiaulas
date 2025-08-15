@@ -3,6 +3,9 @@
 
 import crypto from 'node:crypto'
 import fastify from 'fastify'
+import { db } from './src/database/client.ts'
+import { courses } from './src/database/schema.ts'
+import { eq } from 'drizzle-orm'
 
 const server = fastify({
   logger: {
@@ -16,17 +19,25 @@ const server = fastify({
   }
 })
 
-const cursos = [
-  { id: '1', title: "Curso de Node" },
-  { id: '2', title: "Curso de React" },
-  { id: '3', title: "Curso de Vue" }
-]
+// const cursos = [
+//   { id: '1', title: "Curso de Node" },
+//   { id: '2', title: "Curso de React" },
+//   { id: '3', title: "Curso de Vue" }
+// ]
 
-server.get('/cursos', (request, reply) => {
-  return { cursos }
+server.get('/cursos', async (request, reply) => {
+  // fazendo uma requisição a base de dados na tabela cursos
+  const cursosList = await db.select(
+    {
+      id: courses.id, //listando apenas id e title
+      title: courses.title
+    }
+  ).from(courses)
+
+  return { cursos: cursosList }
 })
 
-server.get('/cursos/:id', (request, reply) => {
+server.get('/cursos/:id', async (request, reply) => {
   type Params = {
     id: string
   }
@@ -34,34 +45,40 @@ server.get('/cursos/:id', (request, reply) => {
   const params = request.params as Params
   const cursoId = params.id
 
-  const curso = cursos.find(curso => curso.id === cursoId)
+  // Com [curso] Você já pega diretamente o primeiro elemento sem precisar escrever result[0]
+  const [curso] = await db
+    .select()
+    .from(courses)
+    .where(eq(courses.id, cursoId))
 
-  if (curso) {
-    return { curso }
+  if (!curso) {
+    return reply.status(404).send()
   }
 
-  return reply.status(404).send()
+  return { curso }
 })
 
-server.post('/cursos', (request, reply) => {
+server.post('/cursos', async (request, reply) => {
   type Body = {
     title: string
   }
 
   const body = request.body as Body
-
-  const cursoId = crypto.randomUUID()
   const cursoTitle = body.title
 
   if (!cursoTitle) {
     return reply.status(400).send({ error: 'O campo "title" é obrigatório' })
   }
 
-  cursos.push({ id: cursoId, title: cursoTitle })
-  return reply.status(201).send({ cursoId })
+  const result = await db
+    .insert(courses)
+    .values({ title: cursoTitle })
+    .returning()
+
+  return reply.status(201).send({ cursoId: result[0].id })
 })
 
-server.delete('/cursos/:id', (request, reply) => {
+server.delete('/cursos/:id', async (request, reply) => {
   type Params = {
     id: string
   }
@@ -69,17 +86,17 @@ server.delete('/cursos/:id', (request, reply) => {
   const params = request.params as Params
   const cursoId = params.id
 
-  const cursoIndex = cursos.findIndex(curso => curso.id === cursoId)
+  // Com [deletedCourse] Você já pega diretamente o primeiro elemento sem precisar escrever result[0]
+  const [deletedCourse] = await db
+    .delete(courses)
+    .where(eq(courses.id, cursoId))
+    .returning()
 
-  if (cursoIndex === -1) {
-    return reply.status(404).send()
+  if (!deletedCourse) {
+    return reply.status(404).send({ message: 'Curso não encontrado' })
   }
-  console.log("valor a ser eliminado....", cursoIndex)
 
-  cursos.splice(cursoIndex, 1)
-
-  return reply.status(200).send({ cursoId, "message": "Curso deletado com sucesso" })
-
+  return reply.status(200).send({ result: deletedCourse, "message": "Curso deletado com sucesso" })
 })
 
 server.listen({ port: 3333 }).then(() => {

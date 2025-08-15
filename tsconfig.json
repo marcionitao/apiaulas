@@ -9,6 +9,8 @@
       "ESNext.Collection",
       "ESNext.Iterator"
     ],
+    "allowImportingTsExtensions": true, // necessario para importar arquivos .ts
+    "noEmit": true, // não converter ts para js
     "module": "nodenext",
     "target": "es2022",
     "strict": true,
