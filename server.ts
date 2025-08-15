@@ -1,12 +1,13 @@
-// const fastify = require('fastify')
-// const crypto = require('node:crypto')
-
-import crypto from 'node:crypto'
 import fastify from 'fastify'
+import { fastifySwagger } from '@fastify/swagger'
+import { fastifySwaggerUi } from '@fastify/swagger-ui'
+import { validatorCompiler, serializerCompiler, type ZodTypeProvider, jsonSchemaTransform } from 'fastify-type-provider-zod'
 import { db } from './src/database/client.ts'
 import { courses } from './src/database/schema.ts'
 import { eq } from 'drizzle-orm'
+import { z } from 'zod'
 
+// meu server
 const server = fastify({
   logger: {
     transport: {
@@ -17,13 +18,27 @@ const server = fastify({
       }
     }
   }
+}).withTypeProvider<ZodTypeProvider>()
+
+// Swagger para Documentação
+server.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: 'API de Cursos',
+      version: '1.0.0',
+      description: 'API para gerenciamento de cursos'
+    }
+  },
+  transform: jsonSchemaTransform
+})
+// apresentação grafica opara Swagger
+server.register(fastifySwaggerUi, {
+  routePrefix: '/docs'
 })
 
-// const cursos = [
-//   { id: '1', title: "Curso de Node" },
-//   { id: '2', title: "Curso de React" },
-//   { id: '3', title: "Curso de Vue" }
-// ]
+// para validação
+server.setValidatorCompiler(validatorCompiler) // serve para validar os dados de entrada
+server.setSerializerCompiler(serializerCompiler) // é uma forma de converter os dados de saida
 
 server.get('/cursos', async (request, reply) => {
   // fazendo uma requisição a base de dados na tabela cursos
@@ -37,13 +52,15 @@ server.get('/cursos', async (request, reply) => {
   return { cursos: cursosList }
 })
 
-server.get('/cursos/:id', async (request, reply) => {
-  type Params = {
-    id: string
+server.get('/cursos/:id', {
+  schema: {
+    params: z.object({
+      id: z.uuid()
+    })
   }
+}, async (request, reply) => {
 
-  const params = request.params as Params
-  const cursoId = params.id
+  const cursoId = request.params.id
 
   // Com [curso] Você já pega diretamente o primeiro elemento sem precisar escrever result[0]
   const [curso] = await db
@@ -58,17 +75,15 @@ server.get('/cursos/:id', async (request, reply) => {
   return { curso }
 })
 
-server.post('/cursos', async (request, reply) => {
-  type Body = {
-    title: string
+server.post('/cursos', {
+  schema: {
+    body: z.object({
+      title: z.string().min(5, 'O título deve ter no mínimo 5 caracteres')
+    })
   }
+}, async (request, reply) => {
 
-  const body = request.body as Body
-  const cursoTitle = body.title
-
-  if (!cursoTitle) {
-    return reply.status(400).send({ error: 'O campo "title" é obrigatório' })
-  }
+  const cursoTitle = request.body.title
 
   const result = await db
     .insert(courses)
