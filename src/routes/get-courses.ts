@@ -18,6 +18,7 @@ export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
         })
       }
     }
+
   }, async (request, reply) => {
     // fazendo uma requisição a base de dados na tabela cursos
     const cursosList = await db.select(

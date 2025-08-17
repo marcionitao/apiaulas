@@ -8,10 +8,22 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 export const getCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
   server.get('/cursos/:id', {
     schema: {
+      tags: ['courses'],
+      summary: 'Get courses by ID',
       params: z.object({
         id: z.uuid()
-      })
-    }
+      }),
+      response: {
+        200: z.object({
+          course: z.object({
+            id: z.uuid(),
+            title: z.string(),
+            description: z.string().nullable(),
+          })
+        }),
+        404: z.null().describe('Course not found'),
+      },
+    },
   }, async (request, reply) => {
 
     const cursoId = request.params.id
@@ -25,6 +37,6 @@ export const getCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
       return reply.status(404).send()
     }
 
-    return { curso }
+    return { course: curso }
   })
 }

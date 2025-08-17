@@ -1,11 +1,11 @@
 import fastify from 'fastify'
 import { fastifySwagger } from '@fastify/swagger'
-import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { validatorCompiler, serializerCompiler, type ZodTypeProvider, jsonSchemaTransform } from 'fastify-type-provider-zod'
 import { createCourseRoute } from './src/routes/create-course.ts'
 import { deleteCourseRoute } from './src/routes/delete-course.ts'
 import { getCourseByIdRoute } from './src/routes/get-course-by-id.ts'
 import { getCourseRoute } from './src/routes/get-courses.ts'
+import sclarAPIReference from '@scalar/fastify-api-reference'
 
 // meu server
 const server = fastify({
@@ -20,21 +20,24 @@ const server = fastify({
   }
 }).withTypeProvider<ZodTypeProvider>()
 
-// Swagger para Documentação
-server.register(fastifySwagger, {
-  openapi: {
-    info: {
-      title: 'API de Cursos',
-      version: '1.0.0',
-      description: 'API para gerenciamento de cursos'
-    }
-  },
-  transform: jsonSchemaTransform
-})
-// apresentação grafica opara Swagger
-server.register(fastifySwaggerUi, {
-  routePrefix: '/docs'
-})
+// Irá verificar se o ambiente é ou não de produção
+if (process.env.NODE_ENV === 'development') {
+  // Swagger para Documentação
+  server.register(fastifySwagger, {
+    openapi: {
+      info: {
+        title: 'API de Cursos',
+        version: '1.0.0',
+        description: 'API para gerenciamento de cursos'
+      }
+    },
+    transform: jsonSchemaTransform
+  })
+  // UI graphics to DOCS
+  server.register(sclarAPIReference, {
+    routePrefix: '/docs',
+  })
+}
 
 // para validação
 server.setValidatorCompiler(validatorCompiler) // serve para validar os dados de entrada
