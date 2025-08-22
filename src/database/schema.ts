@@ -1,4 +1,4 @@
-import { timestamp } from 'drizzle-orm/pg-core';
+import { timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 import { pgTable, uuid, text } from 'drizzle-orm/pg-core';
 
 // criando uma tabela users
@@ -15,7 +15,10 @@ export const courses = pgTable('courses', {
 })
 // criando tabela para relacionar usuarios e cursos (usuarios tem que estar matriculados em um ou + cursos)
 export const enrollments = pgTable('enrollments', {
+  id: uuid().primaryKey().defaultRandom(),
   userId: uuid().notNull().references(() => users.id),
   courseId: uuid().notNull().references(() => courses.id),
-  createAt: timestamp().notNull().defaultNow(),
-})
+  createAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+}, table => [
+  uniqueIndex().on(table.userId, table.courseId), // evitar que um user se increva no mesmo curso 2 vezes
+])

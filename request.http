@@ -2,12 +2,12 @@ POST http://localhost:3333/cursos
 Content-Type: application/json
 
 {
-  "title": "Curso de Java Web"
+  "title": "Curso de Java Spring Boot"
 }
 
 ###
 
-GET http://localhost:3333/cursos
+GET http://localhost:3333/cursos?orderBy=title
 
 ###
 

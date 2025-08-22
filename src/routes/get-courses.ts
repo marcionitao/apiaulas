@@ -1,15 +1,15 @@
 import z from 'zod'
 import { db } from '../database/client.ts'
-import { courses } from '../database/schema.ts'
+import { courses, enrollments } from '../database/schema.ts'
 
-import { ilike, asc } from 'drizzle-orm' // use ilike para case sensitive, não importa se é maiusculas/minusculas
+import { ilike, asc, eq, count } from 'drizzle-orm' // use ilike para case sensitive, não importa se é maiusculas/minusculas
 
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 
 export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
   server.get('/cursos', {
     schema: {
-      tags: ['courses'],
+      tags: ['cursos'],
       summary: 'Get all courses a new course',
       querystring: z.object({
         search: z.string().optional(), // a ideia é trazer uma pesquisa na url
@@ -21,6 +21,7 @@ export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
           cursos: z.array(z.object({
             id: z.string(),
             title: z.string(),
+            enrollments: z.number() // conta quantas matriculas
           })),
           totalCursos: z.number()
         })
@@ -35,13 +36,16 @@ export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
       db
         .select({
           id: courses.id, //listando apenas id e title
-          title: courses.title
+          title: courses.title,
+          enrollments: count(enrollments.id) // conta quantas matriculas
         })
         .from(courses)
+        .leftJoin(enrollments, eq(enrollments.courseId, courses.id))
         .orderBy(asc(courses[orderBy])) // ordenar por titulo
         .offset((page - 1) * 2) // quantos registo quero pular
-        .limit(2) // registo por pagina
-        .where(search ? ilike(courses.title, `%${search}%`) : undefined), // a ideia é trazer uma pesquisa na url
+        .limit(8) // registo por pagina
+        .where(search ? ilike(courses.title, `%${search}%`) : undefined) // a ideia é trazer uma pesquisa na url
+        .groupBy(courses.id), // agrupar por cursos
       db.$count(courses, search ? ilike(courses.title, `%${search}%`) : undefined)
     ])
 
