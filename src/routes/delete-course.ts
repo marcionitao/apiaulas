@@ -5,7 +5,7 @@ import { courses } from '../database/schema.ts'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 
 export const deleteCourseRoute: FastifyPluginAsyncZod = async (server) => {
-  server.delete('/cursos/:id', async (request, reply) => {
+  server.delete('/course/:id', async (request, reply) => {
     type Params = {
       id: string
     }

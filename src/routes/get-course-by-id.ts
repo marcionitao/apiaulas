@@ -6,7 +6,7 @@ import { courses } from '../database/schema.ts'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 
 export const getCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
-  server.get('/cursos/:id', {
+  server.get('/courses/:id', {
     schema: {
       tags: ['courses'],
       summary: 'Get courses by ID',

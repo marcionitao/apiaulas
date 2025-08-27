@@ -5,7 +5,7 @@ import { courses } from '../database/schema.ts'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 
 export const createCourseRoute: FastifyPluginAsyncZod = async (server) => {
-  server.post('/cursos', {
+  server.post('/courses', {
     schema: {
       tags: ['courses'],
       summary: 'Creates a new course',

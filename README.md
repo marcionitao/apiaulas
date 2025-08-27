@@ -17,6 +17,15 @@ This project uses the following technologies:
 * **Zod**: A TypeScript-first schema declaration and validation library.
 * **Pino Pretty**: A beautiful and customizable logger for Pino.
 * **Fastify Type Provider Zod**: Zod type provider for Fastify.
+* **@scalar/fastify-api-reference**: A plugin to generate beautiful API reference documentation.
+* **pg**: Non-blocking PostgreSQL client for Node.js.
+
+### Development & Testing Tools
+
+* **Vitest**: A blazing fast unit-test framework powered by Vite.
+* **Supertest**: A library for testing Node.js HTTP servers.
+* **@faker-js/faker**: A library to generate massive amounts of fake data for testing purposes.
+* **Drizzle Kit**: A CLI companion for Drizzle ORM, used for migrations and database introspection.
 
 ## Getting Started
 

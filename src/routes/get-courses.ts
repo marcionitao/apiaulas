@@ -7,9 +7,9 @@ import { ilike, asc, eq, count } from 'drizzle-orm' // use ilike para case sensi
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 
 export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
-  server.get('/cursos', {
+  server.get('/courses', {
     schema: {
-      tags: ['cursos'],
+      tags: ['courses'],
       summary: 'Get all courses a new course',
       querystring: z.object({
         search: z.string().optional(), // a ideia é trazer uma pesquisa na url
@@ -18,12 +18,12 @@ export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
       }),
       response: {
         200: z.object({
-          cursos: z.array(z.object({
+          courses: z.array(z.object({
             id: z.string(),
             title: z.string(),
             enrollments: z.number() // conta quantas matriculas
           })),
-          totalCursos: z.number()
+          total: z.number()
         })
       }
     }
@@ -32,7 +32,7 @@ export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
     const { search, orderBy, page } = request.query // usados na url
 
     // fazendo uma requisição a base de dados. Promise.all permite executar todas as queries ao mesmo tempo
-    const [cursosList, totalCursos] = await Promise.all([
+    const [cursosList, total] = await Promise.all([
       db
         .select({
           id: courses.id, //listando apenas id e title
@@ -49,6 +49,6 @@ export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
       db.$count(courses, search ? ilike(courses.title, `%${search}%`) : undefined)
     ])
 
-    return { cursos: cursosList, totalCursos }
+    return { courses: cursosList, total }
   })
 }
