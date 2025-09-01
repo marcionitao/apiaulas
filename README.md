@@ -19,6 +19,7 @@ This project uses the following technologies:
 * **Fastify Type Provider Zod**: Zod type provider for Fastify.
 * **@scalar/fastify-api-reference**: A plugin to generate beautiful API reference documentation.
 * **pg**: Non-blocking PostgreSQL client for Node.js.
+* **Argon2**: A library for securely hashing passwords.
 
 ### Development & Testing Tools
 
@@ -26,6 +27,8 @@ This project uses the following technologies:
 * **Supertest**: A library for testing Node.js HTTP servers.
 * **@faker-js/faker**: A library to generate massive amounts of fake data for testing purposes.
 * **Drizzle Kit**: A CLI companion for Drizzle ORM, used for migrations and database introspection.
+* **Dotenv CLI**: A tool to load environment variables from a `.env` file.
+* **Vitest Coverage V8**: A V8 coverage provider for Vitest.
 
 ## Getting Started
 
