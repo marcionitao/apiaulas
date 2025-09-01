@@ -43,6 +43,20 @@
       "when": 1755892173597,
       "tag": "0005_silly_sugar_man",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1756753880134,
+      "tag": "0006_sparkling_rafael_vega",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1756754429761,
+      "tag": "0007_sturdy_falcon",
+      "breakpoints": true
     }
   ]
 }
