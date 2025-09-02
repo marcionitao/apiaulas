@@ -22,6 +22,4 @@ export async function checkRquestJWT(request: FastifyRequest, reply: FastifyRepl
     return reply.status(401).send({ message: error })
   }
 
-
-
 }

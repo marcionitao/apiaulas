@@ -20,6 +20,7 @@ This project uses the following technologies:
 * **@scalar/fastify-api-reference**: A plugin to generate beautiful API reference documentation.
 * **pg**: Non-blocking PostgreSQL client for Node.js.
 * **Argon2**: A library for securely hashing passwords.
+* **JSON Web Token (JWT)**: A compact, URL-safe means of representing claims to be transferred between two parties.
 
 ### Development & Testing Tools
 
