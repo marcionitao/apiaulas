@@ -44,5 +44,3 @@ export const loginRoute: FastifyPluginAsyncZod = async (server) => {
     return reply.status(200).send({ message: 'OK!' })
   })
 }
-
-// 38:00

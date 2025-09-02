@@ -8,7 +8,7 @@ test('get a course by id', async () => {
 
   await server.ready() // garante que o servidor está pronto antes de fazer a requisição
 
-  // criando um curso
+  // criando um curso na base de dados de testes
   const course = await makeCourse()
   // obter o curso criado pelo id
   const response = await request(server.server)
