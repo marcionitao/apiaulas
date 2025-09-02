@@ -4,9 +4,14 @@ import { db } from '../database/client.ts'
 import { courses } from '../database/schema.ts'
 
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { checkRquestJWT } from './hooks/check_request_jwt.ts';
 
 export const getCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
   server.get('/courses/:id', {
+    preHandler: [
+      // irá executar antes do render -> async (request, reply)
+      checkRquestJWT
+    ],
     schema: {
       tags: ['courses'],
       summary: 'Get courses by ID',
@@ -25,7 +30,7 @@ export const getCourseByIdRoute: FastifyPluginAsyncZod = async (server) => {
       },
     },
   }, async (request, reply) => {
-
+    // render
     const cursoId = request.params.id
     // Com [curso] Você já pega diretamente o primeiro elemento sem precisar escrever result[0]
     const [curso] = await db

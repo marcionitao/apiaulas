@@ -1,21 +1,22 @@
-POST http://localhost:3333/cursos
+POST http://localhost:3333/courses
 Content-Type: application/json
 
 {
-  "title": "Curso de Java Spring Boot"
+  "title": "Curso de Java para doidos!!"
 }
 
 ###
 
-GET http://localhost:3333/cursos?orderBy=title
+GET http://localhost:3333/courses?orderBy=title
 
 ###
 
-GET http://localhost:3333/cursos/7bd9e8c1-0f4a-4a79-8da8-472be21b9f65
+GET http://localhost:3333/courses/f0e31217-a039-4abf-b005-5b880a15eaf8
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MjlhZmNiNS1jZWUxLTQ4NGMtOTMzNS1hODM0ZjlkZmZjZDgiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTc1Njg0NDEzMX0.yCjbFNuZE6JDPEdRCC1yWR5j2ctdfJHXJlJQ6U5Ub7Q
 
 ###
 
-DELETE http://localhost:3333/cursos/88a71712-afe8-4891-a4c3-d420961410bb
+DELETE http://localhost:3333/courses/88a71712-afe8-4891-a4c3-d420961410bb
 
 ###
 
