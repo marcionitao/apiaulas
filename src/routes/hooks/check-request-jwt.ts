@@ -1,6 +1,12 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
 import jwt from 'jsonwebtoken'
 
+type JWTPayload = {
+  sub: string
+  role: 'student' | 'manager'
+}
+
+
 // função para obter o Token
 export async function checkRquestJWT(request: FastifyRequest, reply: FastifyReply) {
   const token = request.headers.authorization
@@ -14,8 +20,8 @@ export async function checkRquestJWT(request: FastifyRequest, reply: FastifyRepl
   }
 
   try {
-    const pyaload = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(pyaload)
+    const pyaload = jwt.verify(token, process.env.JWT_SECRET) as JWTPayload
+    request.user = pyaload
     // return pyaload
 
   } catch (error) {

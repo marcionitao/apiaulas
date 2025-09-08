@@ -5,9 +5,16 @@ import { courses, enrollments } from '../database/schema.ts'
 import { ilike, asc, eq, count } from 'drizzle-orm' // use ilike para case sensitive, não importa se é maiusculas/minusculas
 
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { checkRquestJWT } from './hooks/check-request-jwt.ts'
+import { checkUserRole } from './hooks/check-user-role.ts'
 
 export const getCourseRoute: FastifyPluginAsyncZod = async (server) => {
   server.get('/courses', {
+    preHandler: [
+      // irá executar antes do render -> async (request, reply)
+      checkRquestJWT,
+      checkUserRole('manager')
+    ],
     schema: {
       tags: ['courses'],
       summary: 'Get all courses a new course',
