@@ -21,7 +21,7 @@ test('login', async () => {
 
   expect(response.status).toEqual(200)
   expect(response.body).toEqual({
-    message: "OK!"
+    token: expect.any(String)
   })
 
 })
