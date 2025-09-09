@@ -8,4 +8,4 @@ RUN npm ci
 # nossa app roda na porta 3333
 EXPOSE 3333
 # executa comandos
-CMD ["node", "--experimental-strip-types", "src/server.ts"]
+CMD ["node", "src/server.ts"]
