@@ -4,8 +4,8 @@ WORKDIR /app
 # copiar todos os ficheiros para a pasta do projeto
 COPY . ./
 # instalar as dependencias usando "npm ci""
-RUN npm ci
+RUN npm ci --only=production
 # nossa app roda na porta 3333
 EXPOSE 3333
 # executa comandos
-CMD ["node", "src/server.ts"]
+CMD ["node", "--experimental-strip-types", "src/server.ts"]
